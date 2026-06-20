@@ -32,16 +32,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const repos = get()._repos;
     if (!repos) return;
 
-    const service = createLocalAuthService(repos.localAuth);
-    const hasAccount = await service.hasAccount();
-    const session = service.getSession();
+    try {
+      const service = createLocalAuthService(repos.localAuth);
+      const hasAccount = await service.hasAccount();
+      const session = service.getSession();
 
-    set({
-      hasAccount,
-      session,
-      isHydrated: true,
-      error: null,
-    });
+      set({
+        hasAccount,
+        session,
+        isHydrated: true,
+        error: null,
+      });
+    } catch (err) {
+      set({
+        hasAccount: false,
+        session: null,
+        isHydrated: true,
+        error: err instanceof Error ? err.message : "Failed to initialize auth",
+      });
+    }
   },
 
   register: async (email, password) => {

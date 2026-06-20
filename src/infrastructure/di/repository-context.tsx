@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 import {
   createIndexedDBContainer,
   type RepositoryContainer,
@@ -17,7 +17,10 @@ export function RepositoryProvider({
   children,
   container,
 }: RepositoryProviderProps) {
-  const repos = container ?? createIndexedDBContainer();
+  const repos = useMemo(
+    () => container ?? createIndexedDBContainer(),
+    [container],
+  );
   return (
     <RepositoryContext.Provider value={repos}>
       {children}

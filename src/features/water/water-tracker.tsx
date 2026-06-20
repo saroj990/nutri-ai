@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useWaterStore } from "@/stores/use-water-store";
 import { useSettingsStore } from "@/stores/use-settings-store";
+import { DEFAULT_SETTINGS } from "@/domain/entities/settings";
 import { formatNumber } from "@/features/profile/constants";
 
 interface WaterTrackerProps {
@@ -18,9 +19,8 @@ export function WaterTracker({ compact = false }: WaterTrackerProps) {
   const goal = useWaterStore((s) => s.goal);
   const addWater = useWaterStore((s) => s.addWater);
   const isLoading = useWaterStore((s) => s.isLoading);
-  const quickAdds = useSettingsStore(
-    (s) => s.settings?.waterQuickAdds ?? [250, 500, 1000],
-  );
+  const waterQuickAdds = useSettingsStore((s) => s.settings?.waterQuickAdds);
+  const quickAdds = waterQuickAdds ?? DEFAULT_SETTINGS.waterQuickAdds;
 
   const progress = goal > 0 ? Math.min(100, (consumed / goal) * 100) : 0;
   const remaining = Math.max(0, goal - consumed);

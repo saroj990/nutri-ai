@@ -155,7 +155,17 @@ export function AppInitializer({ children }: { children: React.ReactNode }) {
     router,
   ]);
 
+  const isPublic = isPublicPath(pathname);
+  const canRenderBeforeFoods =
+    isPublic ||
+    pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/settings");
+
   if (!authHydrated) {
+    if (isPublic) {
+      return <>{children}</>;
+    }
+
     return (
       <div className="flex min-h-full items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -170,7 +180,11 @@ export function AppInitializer({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  if (!profileHydrated || !settingsHydrated || !foodsHydrated) {
+  if (
+    !profileHydrated ||
+    !settingsHydrated ||
+    (!foodsHydrated && !canRenderBeforeFoods)
+  ) {
     return (
       <div className="flex min-h-full items-center justify-center">
         <div className="flex flex-col items-center gap-3">
